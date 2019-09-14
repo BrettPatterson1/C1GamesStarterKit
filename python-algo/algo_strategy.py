@@ -186,6 +186,9 @@ class AlgoStrategy(gamelib.AlgoCore):
         game_state.attempt_spawn(FILTER, first_walls)
         game_state.attempt_spawn(DESTRUCTOR, [[25, 12]])
 
+        game_state.attempt_spawn(DESTRUCTOR, [[9, 10],[18,10]])
+        game_state.attempt_spawn(FILTER, [[9, 11],[18,11]])
+
         second_walls = [[4, 11], [5, 10], [6, 9]]
         game_state.attempt_spawn(FILTER, second_walls)
         game_state.attempt_spawn(DESTRUCTOR, [[5, 9]])
@@ -193,6 +196,12 @@ class AlgoStrategy(gamelib.AlgoCore):
         second_walls = [[23, 11], [22, 10], [21, 9]]
         game_state.attempt_spawn(FILTER, second_walls)
         game_state.attempt_spawn(DESTRUCTOR, [[22, 9]])
+
+        game_state.attempt_spawn(DESTRUCTOR, [[16, 7]])
+        game_state.attempt_spawn(FILTER, [[16, 8]])
+
+        game_state.attempt_spawn(DESTRUCTOR, [[11, 7]])
+        game_state.attempt_spawn(FILTER, [[11, 8]])
 
         third_walls = [[7, 8], [8, 7], [9, 6]]
         game_state.attempt_spawn(FILTER, third_walls)
@@ -218,24 +227,38 @@ class AlgoStrategy(gamelib.AlgoCore):
         game_state.attempt_spawn(FILTER, second_walls)
         game_state.attempt_spawn(DESTRUCTOR, [[4,10], [5, 9]])
         third_walls = [[7,8],[8,7],[9,6]]
+
+        game_state.attempt_spawn(DESTRUCTOR, [[9, 10]])
+        game_state.attempt_spawn(FILTER, [[9, 11]])
+
         game_state.attempt_spawn(FILTER, third_walls)
         game_state.attempt_spawn(DESTRUCTOR, [[7,7],[8, 6]])
         fourth_walls = [[10,5],[11,4],[12,3]]
         game_state.attempt_spawn(FILTER, fourth_walls)
         game_state.attempt_spawn(DESTRUCTOR, [[10,4],[11, 3]])
 
+        game_state.attempt_spawn(DESTRUCTOR, [[11, 7]])
+        game_state.attempt_spawn(FILTER, [[11, 8]])
+
         first_walls = [[27, 13], [26, 13], [25, 13], [24, 12]]
         game_state.attempt_spawn(FILTER, first_walls)
         game_state.attempt_spawn(DESTRUCTOR, [[25, 12]])
         second_walls = [[23, 11], [22, 10], [21, 9]]
         game_state.attempt_spawn(FILTER, second_walls)
-        game_state.attempt_spawn(DESTRUCTOR, [[22, 9]])
+        game_state.attempt_spawn(DESTRUCTOR, [[23, 10], [22, 9]])
+
+        game_state.attempt_spawn(DESTRUCTOR, [[18, 10]])
+        game_state.attempt_spawn(FILTER, [[18, 11]])
+
         third_walls = [[20, 8], [19, 7], [18, 6]]
         game_state.attempt_spawn(FILTER, third_walls)
-        game_state.attempt_spawn(DESTRUCTOR, [[19, 6]])
+        game_state.attempt_spawn(DESTRUCTOR, [[20, 7], [19, 6]])
         fourth_walls = [[17, 5], [16, 4], [15, 3]]
         game_state.attempt_spawn(FILTER, fourth_walls)
-        game_state.attempt_spawn(DESTRUCTOR, [[16, 3]])
+        game_state.attempt_spawn(DESTRUCTOR, [[17, 4], [16, 3]])
+
+        game_state.attempt_spawn(DESTRUCTOR, [[16, 7]])
+        game_state.attempt_spawn(FILTER, [[16, 8]])
 
 
 
@@ -246,6 +269,10 @@ class AlgoStrategy(gamelib.AlgoCore):
         second_walls = [[23, 11],[22,10], [21,9]]
         game_state.attempt_spawn(FILTER, second_walls)
         game_state.attempt_spawn(DESTRUCTOR, [[23,10],[22, 9]])
+
+        game_state.attempt_spawn(DESTRUCTOR, [[18, 10]])
+        game_state.attempt_spawn(FILTER, [[18, 11]])
+
         third_walls = [[20, 8],[19,7],[18,6]]
         game_state.attempt_spawn(FILTER, third_walls)
         game_state.attempt_spawn(DESTRUCTOR, [[20,7],[19, 6]])
@@ -253,18 +280,28 @@ class AlgoStrategy(gamelib.AlgoCore):
         game_state.attempt_spawn(FILTER, fourth_walls)
         game_state.attempt_spawn(DESTRUCTOR, [[17,4], [16, 3]])
 
+        game_state.attempt_spawn(DESTRUCTOR, [[16, 7]])
+        game_state.attempt_spawn(FILTER, [[16, 8]])
+
         first_walls = [[0, 13], [1, 13], [2, 13], [3, 12]]
         game_state.attempt_spawn(FILTER, first_walls)
         game_state.attempt_spawn(DESTRUCTOR, [[2, 12]])
         second_walls = [[4, 11], [5, 10], [6, 9]]
         game_state.attempt_spawn(FILTER, second_walls)
-        game_state.attempt_spawn(DESTRUCTOR, [[5, 9]])
+        game_state.attempt_spawn(DESTRUCTOR, [[4, 10], [5, 9]])
         third_walls = [[7, 8], [8, 7], [9, 6]]
+
+        game_state.attempt_spawn(DESTRUCTOR, [[9, 10]])
+        game_state.attempt_spawn(FILTER, [[9, 11]])
+
         game_state.attempt_spawn(FILTER, third_walls)
-        game_state.attempt_spawn(DESTRUCTOR, [[8, 6]])
+        game_state.attempt_spawn(DESTRUCTOR, [[7, 7], [8, 6]])
         fourth_walls = [[10, 5], [11, 4], [12, 3]]
         game_state.attempt_spawn(FILTER, fourth_walls)
-        game_state.attempt_spawn(DESTRUCTOR, [[11, 3]])
+        game_state.attempt_spawn(DESTRUCTOR, [[10, 4], [11, 3]])
+
+        game_state.attempt_spawn(DESTRUCTOR, [[11, 7]])
+        game_state.attempt_spawn(FILTER, [[11, 8]])
 
 
 
