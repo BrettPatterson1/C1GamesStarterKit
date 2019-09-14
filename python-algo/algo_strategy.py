@@ -72,7 +72,20 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         For defense we will use a spread out layout and some Scramblers early on.
         We will place destructors near locations the opponent managed to score on.
-        For offense we will use long range EMPs if they place stationary units near the enemy's front.
+        For offense we will use long range EMPs if they place station
+        self.build_defences(game_state)
+        # Now build reactive defenses based on where the enemy scored
+        self.build_reactive_defense(game_state)
+
+        # If the turn is less than 5, stall with Scramblers and wait to see enemy's base
+        if game_state.turn_number < 5:
+            self.stall_with_scramblers(game_state)
+        else:
+            # Now let's analyze the enemy base to see where their defenses are concentrated.
+            # If they have many units in the front we can build a line for our EMPs to attack them at long range.
+            if self.detect_enemy_unit(game_state, unit_type=None, valid_x=None, valid_y=[14, 15]) > 10:
+                self.emp_line_strategy(game_state)
+            else:ary units near the enemy's front.
         If there are no stationary units to attack in the front, we will send Pings to try and score quickly.
         """
         # First, place basic defenses
@@ -102,6 +115,7 @@ class AlgoStrategy(gamelib.AlgoCore):
                 # Lastly, if we have spare cores, let's build some Encryptors to boost our Pings' health.
                 encryptor_locations = [[13, 2], [14, 2], [13, 3], [14, 3]]
                 game_state.attempt_spawn(ENCRYPTOR, encryptor_locations)
+
 
     def build_defences(self, game_state):
         """
@@ -232,6 +246,34 @@ class AlgoStrategy(gamelib.AlgoCore):
                 self.scored_on_locations.append(location)
                 gamelib.debug_write("All locations: {}".format(self.scored_on_locations))
 
+    def cannon(self, game_state):
+        current_cores = game_state.get_resource(self.CORES, 0)
+        current_bits = game_state.get_resource(self.BITS, 0)
+        if current_cores >= 12 and current_bits >= 10:
+            for i in range(1, 7): # Check if cannon can be built on the columns 12 and 14
+                if not (game_state.contains_stationary_unit(12, i)):
+                    game_state.attempt_spawn('ENCRYPTOR', [12, i])  
+                if not (game_state.contains_stationary_unit(14, i)):
+                    game_state.attempt_spawn('ENCRYPTOR', [12, i])
+            location = self.least_damage_spawn_location(game_state, [[14, 0], [13, 0]])
+            
+            # left_side_path = check_destructors(game_state, find_path_to_edge(14, 0)) 
+            # right_side_path = check_destructors(game_state, find_path_to_edge(13, 0))
+            
+            # if left_side_path < right_side_path:
+            #     location = [14, 0]
+            # else:
+            #     location = [12, 0]
+            for i in range(math.floor(current_bits)): # Use a lot of pings
+                game_state.add_unit('PING', location)
+
+
+    def check_destructors(self, game_state, path):
+        number_attacker = 0
+        for location in path:
+            number_attacker = len(get_attackers(location, 1)) # number of attackers that will target a specific location in path
+        return number_attacker
+    
 
 if __name__ == "__main__":
     algo = AlgoStrategy()
