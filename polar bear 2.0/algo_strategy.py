@@ -98,6 +98,9 @@ class AlgoStrategy(gamelib.AlgoCore):
         # If the turn is less than 5, stall with Scramblers and wait to see enemy's base
         if not self.cannon(game_state):
             self.stall_with_scramblers(game_state)
+        
+        if game_state.get_resource(game_state.BITS, 0) >= 10:
+            self.ping(game_state)
 
         
         # if game_state.turn_number < 5:
@@ -470,6 +473,10 @@ class AlgoStrategy(gamelib.AlgoCore):
                 game_state.attempt_spawn(PING, location)
             return True
         return False
+    
+    def ping(self, game_state):
+        location = self.least_damage_spawn_location(game_state, [[14, 0], [13, 0]])
+        game_state.attempt_spawn(PING, location, num=game_state.get_resource(game_state.BITS, 0))
 
 
     # def check_destructors(self, game_state, path):
