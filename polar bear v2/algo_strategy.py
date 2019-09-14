@@ -92,8 +92,8 @@ class AlgoStrategy(gamelib.AlgoCore):
         if game_state.turn_number == 1:
             self.build_opener(game_state)
         # Now build reactive defenses based on where the enemy scored
-        self.build_reactive_defense(game_state)
         self.add_to_cannon(game_state)
+        self.build_reactive_defense(game_state)
 
         # If the turn is less than 5, stall with Scramblers and wait to see enemy's base
         if not self.cannon(game_state):
@@ -476,7 +476,7 @@ class AlgoStrategy(gamelib.AlgoCore):
     
     def ping(self, game_state):
         location = self.least_damage_spawn_location(game_state, [[14, 0], [13, 0]])
-        game_state.attempt_spawn(PING, location, num=game_state.get_resource(game_state.BITS, 0))
+        game_state.attempt_spawn(PING, location, num=int(game_state.get_resource(game_state.BITS, 0)))
 
 
     # def check_destructors(self, game_state, path):
