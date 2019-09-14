@@ -89,7 +89,8 @@ class AlgoStrategy(gamelib.AlgoCore):
         If there are no stationary units to attack in the front, we will send Pings to try and score quickly.
         """
         # First, place basic defenses
-        self.build_defences(game_state)
+        if game_state.turn_number == 1:
+            self.build_opener(game_state)
         # Now build reactive defenses based on where the enemy scored
         self.build_reactive_defense(game_state)
 
@@ -134,16 +135,134 @@ class AlgoStrategy(gamelib.AlgoCore):
         filter_locations = [[8, 12], [19, 12]]
         game_state.attempt_spawn(FILTER, filter_locations)
 
+    def build_opener(self, game_state):
+        filter_locations = [[0, 13], [1, 13], [2, 13], [3, 12], [4, 11], [5, 10], [27, 13], [26, 13],[25,13],[24,12],[23,11],[22,10]]
+
+        game_state.attempt_spawn(FILTER, filter_locations)
+
+        destructor_locations = [[2,12], [25,12]]
+        game_state.attempt_spawn(DESTRUCTOR, destructor_locations)
+
+
     def build_reactive_defense(self, game_state):
         """
         This function builds reactive defenses based on where the enemy scored on us from.
         We can track where the opponent scored by looking at events in action frames 
         as shown in the on_action_frame function
         """
+        bottom_left = gamelib.get_edge_locations(GameMap.BOTTOM_LEFT)
+        bottom_right = gamelib.get_edge_locations(GameMap.BOTTOM_RIGHT)
+        bl_attacked = False
+        br_attacked = False
         for location in self.scored_on_locations:
             # Build destructor one space above so that it doesn't block our own edge spawn locations
-            build_location = [location[0], location[1]+1]
-            game_state.attempt_spawn(DESTRUCTOR, build_location)
+            if location in bottom_left:
+                bl_attacked = True
+            elif location in bottom_right:
+                br_attacked = True
+
+        if bl_attacked and br_attacked:
+            self.build_equal(game_state)
+        elif bl_attacked:
+            self.build_left(game_state)
+        elif br_attacked:
+            self.build_right(game_state)
+        else:
+            self.build_equal(game_state)
+
+    def build_equal(self, game_state):
+        first_walls = [[0, 13], [1, 13], [2, 13], [3, 12]]
+        game_state.attempt_spawn(FILTER, first_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[2, 12]])
+
+        first_walls = [[27, 13], [26, 13], [25, 13], [24, 12]]
+        game_state.attempt_spawn(FILTER, first_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[25, 12]])
+
+        second_walls = [[4, 11], [5, 10], [6, 9]]
+        game_state.attempt_spawn(FILTER, second_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[5, 9]])
+
+        second_walls = [[23, 11], [22, 10], [21, 9]]
+        game_state.attempt_spawn(FILTER, second_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[22, 9]])
+
+        third_walls = [[7, 8], [8, 7], [9, 6]]
+        game_state.attempt_spawn(FILTER, third_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[8, 6]])
+
+        third_walls = [[20, 8], [19, 7], [18, 6]]
+        game_state.attempt_spawn(FILTER, third_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[19, 6]])
+
+        fourth_walls = [[10, 5], [11, 4], [12, 3]]
+        game_state.attempt_spawn(FILTER, fourth_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[11, 3]])
+
+        fourth_walls = [[17, 5], [16, 4], [15, 3]]
+        game_state.attempt_spawn(FILTER, fourth_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[16, 3]])
+
+    def build_left(self, game_state):
+        first_walls = [[0, 13], [1, 13], [2, 13], [3, 12]]
+        game_state.attempt_spawn(FILTER, first_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[2,12]])
+        second_walls = [[4, 11], [5, 10], [6,9]]
+        game_state.attempt_spawn(FILTER, second_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[4,10], [5, 9]])
+        third_walls = [[7,8],[8,7],[9,6]]
+        game_state.attempt_spawn(FILTER, third_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[7,7],[8, 6]])
+        fourth_walls = [[10,5],[11,4],[12,3]]
+        game_state.attempt_spawn(FILTER, fourth_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[10,4],[11, 3]])
+
+        first_walls = [[27, 13], [26, 13], [25, 13], [24, 12]]
+        game_state.attempt_spawn(FILTER, first_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[25, 12]])
+        second_walls = [[23, 11], [22, 10], [21, 9]]
+        game_state.attempt_spawn(FILTER, second_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[22, 9]])
+        third_walls = [[20, 8], [19, 7], [18, 6]]
+        game_state.attempt_spawn(FILTER, third_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[19, 6]])
+        fourth_walls = [[17, 5], [16, 4], [15, 3]]
+        game_state.attempt_spawn(FILTER, fourth_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[16, 3]])
+
+
+
+    def build_right(selfself, game_state):
+        first_walls = [[27, 13], [26, 13],[25,13],[24,12]]
+        game_state.attempt_spawn(FILTER, first_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[25, 12]])
+        second_walls = [[23, 11],[22,10], [21,9]]
+        game_state.attempt_spawn(FILTER, second_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[23,10],[22, 9]])
+        third_walls = [[20, 8],[19,7],[18,6]]
+        game_state.attempt_spawn(FILTER, third_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[20,7],[19, 6]])
+        fourth_walls = [[17,5],[16,4],[15,3]]
+        game_state.attempt_spawn(FILTER, fourth_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[17,4], [16, 3]])
+
+        first_walls = [[0, 13], [1, 13], [2, 13], [3, 12]]
+        game_state.attempt_spawn(FILTER, first_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[2, 12]])
+        second_walls = [[4, 11], [5, 10], [6, 9]]
+        game_state.attempt_spawn(FILTER, second_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[5, 9]])
+        third_walls = [[7, 8], [8, 7], [9, 6]]
+        game_state.attempt_spawn(FILTER, third_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[8, 6]])
+        fourth_walls = [[10, 5], [11, 4], [12, 3]]
+        game_state.attempt_spawn(FILTER, fourth_walls)
+        game_state.attempt_spawn(DESTRUCTOR, [[11, 3]])
+
+
+
+
+
 
     def stall_with_scramblers(self, game_state):
         """
