@@ -100,22 +100,23 @@ class AlgoStrategy(gamelib.AlgoCore):
         else:
             # Now let's analyze the enemy base to see where their defenses are concentrated.
             # If they have many units in the front we can build a line for our EMPs to attack them at long range.
-            if self.detect_enemy_unit(game_state, unit_type=None, valid_x=None, valid_y=[14, 15]) > 10:
-                self.emp_line_strategy(game_state)
-            else:
-                # They don't have many units in the front so lets figure out their least defended area and send Pings there.
+            self.cannon(game_state)
+            # if self.detect_enemy_unit(game_state, unit_type=None, valid_x=None, valid_y=[14, 15]) > 10:
+            #     self.emp_line_strategy(game_state)
+            # else:
+            #     # They don't have many units in the front so lets figure out their least defended area and send Pings there.
 
-                # Only spawn Ping's every other turn
-                # Sending more at once is better since attacks can only hit a single ping at a time
-                if game_state.turn_number % 2 == 1:
-                    # To simplify we will just check sending them from back left and right
-                    ping_spawn_location_options = [[13, 0], [14, 0]]
-                    best_location = self.least_damage_spawn_location(game_state, ping_spawn_location_options)
-                    game_state.attempt_spawn(PING, best_location, 1000)
+            #     # Only spawn Ping's every other turn
+            #     # Sending more at once is better since attacks can only hit a single ping at a time
+            #     if game_state.turn_number % 2 == 1:
+            #         # To simplify we will just check sending them from back left and right
+            #         ping_spawn_location_options = [[13, 0], [14, 0]]
+            #         best_location = self.least_damage_spawn_location(game_state, ping_spawn_location_options)
+            #         game_state.attempt_spawn(PING, best_location, 1000)
 
-                # Lastly, if we have spare cores, let's build some Encryptors to boost our Pings' health.
-                encryptor_locations = [[13, 2], [14, 2], [13, 3], [14, 3]]
-                game_state.attempt_spawn(ENCRYPTOR, encryptor_locations)
+            #     # Lastly, if we have spare cores, let's build some Encryptors to boost our Pings' health.
+            #     encryptor_locations = [[13, 2], [14, 2], [13, 3], [14, 3]]
+            #     game_state.attempt_spawn(ENCRYPTOR, encryptor_locations)
 
 
     def build_defences(self, game_state):
@@ -150,8 +151,8 @@ class AlgoStrategy(gamelib.AlgoCore):
         We can track where the opponent scored by looking at events in action frames 
         as shown in the on_action_frame function
         """
-        bottom_left = gamelib.get_edge_locations(GameMap.BOTTOM_LEFT)
-        bottom_right = gamelib.get_edge_locations(GameMap.BOTTOM_RIGHT)
+        bottom_left = game_state.game_map.get_edge_locations(game_state.game_map.BOTTOM_LEFT)
+        bottom_right = game_state.game_map.get_edge_locations(game_state.game_map.BOTTOM_RIGHT)
         bl_attacked = False
         br_attacked = False
         for location in self.scored_on_locations:
@@ -232,7 +233,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
 
 
-    def build_right(selfself, game_state):
+    def build_right(self, game_state):
         first_walls = [[27, 13], [26, 13],[25,13],[24,12]]
         game_state.attempt_spawn(FILTER, first_walls)
         game_state.attempt_spawn(DESTRUCTOR, [[25, 12]])
@@ -370,9 +371,9 @@ class AlgoStrategy(gamelib.AlgoCore):
         current_bits = game_state.get_resource(game_state.BITS, 0)
         if current_cores >= 12 and current_bits >= 10:
             for i in range(1, 7): # Check if cannon can be built on the columns 12 and 14
-                if not (game_state.contains_stationary_unit(12, i)):
+                if not (game_state.contains_stationary_unit([12, i])):
                     game_state.attempt_spawn('ENCRYPTOR', [12, i])  
-                if not (game_state.contains_stationary_unit(14, i)):
+                if not (game_state.contains_stationary_unit([14, i])):
                     game_state.attempt_spawn('ENCRYPTOR', [12, i])
             location = self.least_damage_spawn_location(game_state, [[14, 0], [13, 0]])
             
@@ -384,14 +385,14 @@ class AlgoStrategy(gamelib.AlgoCore):
             # else:
             #     location = [12, 0]
             for i in range(math.floor(current_bits)): # Use a lot of pings
-                game_state.add_unit('PING', location)
+                game_state.attempt_spawn('PING', location)
 
 
-    def check_destructors(self, game_state, path):
-        number_attacker = 0
-        for location in path:
-            number_attacker = len(get_attackers(location, 1)) # number of attackers that will target a specific location in path
-        return number_attacker
+    # def check_destructors(self, game_state, path):
+    #     number_attacker = 0
+    #     for location in path:
+    #         number_attacker = len(get_attackers(location, 1)) # number of attackers that will target a specific location in path
+    #     return number_attacker
     
 
 if __name__ == "__main__":
