@@ -247,8 +247,8 @@ class AlgoStrategy(gamelib.AlgoCore):
                 gamelib.debug_write("All locations: {}".format(self.scored_on_locations))
 
     def cannon(self, game_state):
-        current_cores = game_state.get_resource(self.CORES, 0)
-        current_bits = game_state.get_resource(self.BITS, 0)
+        current_cores = game_state.get_resource(game_state.CORES, 0)
+        current_bits = game_state.get_resource(game_state.BITS, 0)
         if current_cores >= 12 and current_bits >= 10:
             for i in range(1, 7): # Check if cannon can be built on the columns 12 and 14
                 if not (game_state.contains_stationary_unit(12, i)):
