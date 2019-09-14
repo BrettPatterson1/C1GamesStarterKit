@@ -93,6 +93,7 @@ class AlgoStrategy(gamelib.AlgoCore):
             self.build_opener(game_state)
         # Now build reactive defenses based on where the enemy scored
         self.build_reactive_defense(game_state)
+        self.add_to_cannon(game_state)
 
         # If the turn is less than 5, stall with Scramblers and wait to see enemy's base
         if not self.cannon(game_state):
@@ -124,6 +125,11 @@ class AlgoStrategy(gamelib.AlgoCore):
             #     encryptor_locations = [[13, 2], [14, 2], [13, 3], [14, 3]]
             #     game_state.attempt_spawn(ENCRYPTOR, encryptor_locations)
 
+    def add_to_cannon(self, game_state):
+        cannon_locations = [[12,1],[14,1],[12,2],[14,2],[12,3],[14,3],[12,4],[14,4],[12,5],[14,5],[12,6],[14,6],[12,7],[14,7], [15,1],[15,2]]
+        for location in cannon_locations:
+            if game_state.attempt_spawn(ENCRYPTOR, location) == 1:
+                return
 
     def build_defences(self, game_state):
         """
