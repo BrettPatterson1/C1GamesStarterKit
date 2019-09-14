@@ -130,9 +130,15 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def add_to_cannon(self, game_state):
         cannon_locations = [[12,1],[14,1],[12,2],[14,2],[12,3],[14,3],[12,4],[14,4],[12,5],[14,5],[12,6],[14,6],[12,7],[14,7], [15,1],[15,2]]
+        destructor_locations = [[24,11], [24,10],[26,12],[23,9], [15,9],[11,9],[16,9],[10,9],[12,11],[14,11], [11,5]]
+
+        for location in destructor_locations:
+            if game_state.attempt_spawn(DESTRUCTOR, location) == 1:
+                break
+
         for location in cannon_locations:
             if game_state.attempt_spawn(ENCRYPTOR, location) == 1:
-                return
+                break
 
     def build_defences(self, game_state):
         """
