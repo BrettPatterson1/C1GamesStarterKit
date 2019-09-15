@@ -92,8 +92,8 @@ class AlgoStrategy(gamelib.AlgoCore):
         if game_state.turn_number == 1:
             self.build_opener(game_state)
         # Now build reactive defenses based on where the enemy scored
-        self.add_to_cannon(game_state)
         self.build_reactive_defense(game_state)
+        self.add_to_cannon(game_state)
 
         # If the turn is less than 5, stall with Scramblers and wait to see enemy's base
         if not self.cannon(game_state):
@@ -130,7 +130,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def add_to_cannon(self, game_state):
         cannon_locations = [[12,1],[14,1],[12,2],[14,2],[12,3],[14,3],[12,4],[14,4],[12,5],[14,5],[12,6],[14,6],[12,7],[14,7], [15,1],[15,2]]
-        destructor_locations = [[24,11], [24,10],[26,12],[23,9], [15,9],[11,9],[16,9],[10,9],[12,11],[14,11], [11,5]]
+        destructor_locations = [[15,9],[11,9],[16,9],[10,9],[12,11],[14,11], [11,5]]
 
         for location in destructor_locations:
             if game_state.attempt_spawn(DESTRUCTOR, location) == 1:
@@ -172,6 +172,36 @@ class AlgoStrategy(gamelib.AlgoCore):
         We can track where the opponent scored by looking at events in action frames 
         as shown in the on_action_frame function
         """
+        leftX = 0
+        leftY = 0
+        leftCount = 0
+        rightX = 0
+        rightY = 0
+        rightCount = 0
+        for location in self.scored_on_locations:
+            # Build destructor one space above so that it doesn't block our own edge spawn locations
+            if location in game_state.game_map.get_edge_locations(game_state.game_map.BOTTOM_RIGHT):
+                rightX = rightX + location[0]
+                rightY = rightY + location[1]
+                rightCount += 1
+            elif location in game_state.game_map.get_edge_locations(game_state.game_map.BOTTOM_LEFT): 
+                leftX = leftX + location[0]
+                leftY = leftY + location[1]
+                leftCount += 1
+        if rightCount > 5:
+            for i in range(0, 8):
+                location = [rightX // rightCount - i, rightY // rightCount + i]
+                build_location = [location[0], location[1]+1]
+                game_state.attempt_spawn(DESTRUCTOR, build_location)
+            # game_state.attempt_spawn(FILTER, build_location)
+        if leftCount > 5:
+            for i in range(0, 8):
+                location = [leftX // leftCount + i, leftY // leftCount + i]
+                build_location = [location[0], location[1]+1]
+                game_state.attempt_spawn(DESTRUCTOR, build_location)
+            
+            # game_state.attempt_spawn(FILTER, build_location)
+        
         bottom_left = game_state.game_map.get_edge_locations(game_state.game_map.BOTTOM_LEFT)
         bottom_right = game_state.game_map.get_edge_locations(game_state.game_map.BOTTOM_RIGHT)
         bl_attacked = False
@@ -337,7 +367,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         friendly_edges = game_state.game_map.get_edge_locations(game_state.game_map.BOTTOM_LEFT) + game_state.game_map.get_edge_locations(game_state.game_map.BOTTOM_RIGHT)
 
         optimal_spawns = self.optimal_scrambler(game_state)
-        if game_state.turn_number > 6:
+        if game_state.turn_number > 15:
             game_state.attempt_spawn(SCRAMBLER, optimal_spawns[0][0])
             game_state.attempt_spawn(SCRAMBLER, optimal_spawns[1][0])
             return
